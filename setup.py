@@ -23,21 +23,21 @@ __version__ = "0.0.1"
 
 def main() -> None:
     setuptools.setup(
-        name="smart",
+        name="smartquote",
         version=__version__,
         author="Kyle Gorman",
         author_email="kylebgorman@gmail.com",
         description="substitute or remove “smart” quotes",
         long_description=_LONG_DESCRIPTION,
         long_description_content_type="text/markdown",
-        url="https://github.com/kylebgorman/smart",
+        url="https://github.com/kylebgorman/smartquote",
         keywords=[
             "computational linguistics",
             "natural language processing",
             "language",
         ],
         license="Apache 2.0",
-        py_modules=["smart"],
+        py_modules=["smartquote"],
         python_requires=">=3.6",
         classifiers=[
             "Programming Language :: Python :: 3.6",
