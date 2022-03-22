@@ -4,17 +4,13 @@ workflows:
   version: 2
   test:
     jobs:
-      - build-python-3.7
-      - build-python-3.8
-      - build-python-3.9
-      - build-python-3.10
-      - test-python-3.7
-      - test-python-3.8
-      - test-python-3.9
-      - test-python-3.10
+      - python-3.7
+      - python-3.8
+      - python-3.9
+      - python-3.10
 
 jobs:
-  build-python-3.7: &template
+  python-3.7: &template
     docker:
       - image: python:3.7
     steps:
@@ -31,49 +27,36 @@ jobs:
       - run:
           name: Runs mypy check
           working_directory: ~/project
-          command: mypy smartquote.py
+          command: |
+              pip install --progress-bar off --upgrade mypy
+              mypy smartquote.py
       - run:
           name: Runs flake8 check
           working_directory: ~/project
-          command: flake8 smartquote.py
+          command: |
+              pip install --progress-bar off --upgrade flake8
+              flake8 smartquote.py
       - run:
           name: Runs black check
           working_directory: ~/project
-          command: black --line-length 79 --check smartquote.py
-  build-python-3.8:
-    <<: *template
-    docker:
-      - image: python:3.8
-  build-python-3.9:
-    <<: *template
-    docker:
-      - image: python:3.9
-  build-python-3.10:
-    <<: *template
-    docker:
-      - image: python:3.10
-
-  test-python-3.7: &template
-    docker:
-      - image: python:3.7
-    steps:
-      - checkout
+          command: |
+              pip install --progress-bar off --upgrade black
+              black --line-length 79 --check smartquote.py
       - run:
-          name: Runs pytest
+          name: Runs tests
           working_directory: ~/project
           command: |
-              pip install --progress-bar off --upgrade pip setuptools
-              pip install --editable .
+              pip install --progress-bar off --upgrade pytest
               pytest -v smartquote_test.py
-  test-python-3.8:
+  python-3.8:
     <<: *template
     docker:
       - image: python:3.8
-  test-python-3.9:
+  python-3.9:
     <<: *template
     docker:
       - image: python:3.9
-  test-python-3.10:
+  python-3.10:
     <<: *template
     docker:
       - image: python:3.10
