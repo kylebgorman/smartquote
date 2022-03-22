@@ -1,0 +1,79 @@
+version: 2
+
+workflows:
+  version: 2
+  test:
+    jobs:
+      - build-python-3.7
+      - build-python-3.8
+      - build-python-3.9
+      - build-python-3.10
+      - test-python-3.7
+      - test-python-3.8
+      - test-python-3.9
+      - test-python-3.10
+
+jobs:
+  build-python-3.7: &template
+    docker:
+      - image: python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Builds source distribution
+          working_directory: ~/project/
+          # Ensure we can build a source distribution that can correctly install.
+          # "python setup.py sdist" creates dist/smartquotes-x.y.z.tar.gz
+          command: |
+              pip install --progress-bar off --upgrade pip setuptools
+              python setup.py sdist
+              pip install dist/`ls dist/ | grep .tar.gz`
+      - run:
+          name: Runs mypy check
+          working_directory: ~/project
+          command: mypy smartquote.py
+      - run:
+          name: Runs flake8 check
+          working_directory: ~/project
+          command: flake8 smartquote.py
+      - run:
+          name: Runs black check
+          working_directory: ~/project
+          command: black --line-length 79 --check smartquote.py
+  build-python-3.8:
+    <<: *template
+    docker:
+      - image: python:3.8
+  build-python-3.9:
+    <<: *template
+    docker:
+      - image: python:3.9
+  build-python-3.10:
+    <<: *template
+    docker:
+      - image: python:3.10
+
+  test-python-3.7: &template
+    docker:
+      - image: python:3.7
+    steps:
+      - checkout
+      - run:
+          name: Runs pytest
+          working_directory: ~/project
+          command: |
+              pip install --progress-bar off --upgrade pip setuptools
+              pip install --editable .
+              pytest -v smartquote_test.py
+  test-python-3.8:
+    <<: *template
+    docker:
+      - image: python:3.8
+  test-python-3.9:
+    <<: *template
+    docker:
+      - image: python:3.9
+  test-python-3.10:
+    <<: *template
+    docker:
+      - image: python:3.10
