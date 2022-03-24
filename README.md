@@ -1,4 +1,4 @@
-Smartquote
+smartquote
 ==========
 
 [![PyPI
